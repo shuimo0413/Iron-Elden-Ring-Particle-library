@@ -53,3 +53,7 @@ python tool/gen_particle_showcase.py
 # 或在任一工程根（兼容转发）
 python 工具链/gen_particle_showcase.py
 ```
+
+## 许可证
+
+本库（粒子 PNG 与 `tool/` 脚本）以 [MIT License](LICENSE) 发布。
