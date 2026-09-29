@@ -1,5 +1,7 @@
 # 铁魔法：艾尔登法环粒子库
 
+**中文** | [English](README.en.md)
+
 - 这是 mcmod「Iron的法术与魔法书：艾尔登法环」的粒子库，存放原创粒子 PNG，可单独当作通用粒子素材库使用。
 - 粒子分辨率大多为 **32×32**。
 - 仓库：https://github.com/shuimo0413/Iron-Elden-Ring-Particle-library

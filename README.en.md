@@ -1,6 +1,6 @@
 # Iron's Spells: Elden Ring — Particle Library
 
-[中文](readme.md) | **English**
+[中文](README.md) | **English**
 
 - Particle library of the Minecraft mod **"Iron's Spells 'n Spellbooks: Elden Ring"**. It stores original pixel-art particle PNGs and can also be used on its own as a general-purpose particle texture pack.
 - Most particles are **32×32**.
