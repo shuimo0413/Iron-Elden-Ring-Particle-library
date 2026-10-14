@@ -12,7 +12,7 @@
 - ``lightning_*``  闪电主干、电火花
 - ``explosion_0..3``  4 帧爆炸序列：闪光 → 火球 → 翻滚 → 残烟
 - ``slash_arc``  白色斩击弧（可染色）
-- ``heart`` / ``music_note`` / ``anger_mark`` / ``sleep_z``  情绪符号
+- ``heart`` / ``anger_mark`` / ``sleep_z``  情绪符号（乐谱符号见 ``gen_music_particles.py``）
 
 所有随机都走固定种子，重复运行输出完全一致。
 """
@@ -701,25 +701,6 @@ def build_heart() -> dict:
     return to_json("heart", grid)
 
 
-def build_music_note() -> dict:
-    """八分音符：白色主体 + 深色描边，可染色（唱片机 / 吟游诗人 / 魅惑）。"""
-    grid: Grid = {}
-    note: Mask = set()
-    head_cx, head_cy = 11.5, 23.5
-    tilt = math.radians(-20)
-    for y in range(SIZE):
-        for x in range(SIZE):
-            local_x = (x + 0.5 - head_cx) * math.cos(tilt) - (y + 0.5 - head_cy) * math.sin(tilt)
-            local_y = (x + 0.5 - head_cx) * math.sin(tilt) + (y + 0.5 - head_cy) * math.cos(tilt)
-            if (local_x / 4.2) ** 2 + (local_y / 3.0) ** 2 <= 1.0:
-                note.add((x, y))
-    note |= line_mask([(14.5, 22.5), (14.5, 5.5)], brush_size=2)
-    note |= line_mask([(15.5, 5.5), (19.5, 8.5), (22.5, 12.5), (21.5, 17.5)], brush_size=2)
-    fill_mask(grid, note, SYMBOL_FILL, 255)
-    outline_mask(grid, note, SYMBOL_OUTLINE, 255)
-    return to_json("music_note", grid)
-
-
 def build_anger_mark() -> dict:
     """怒气符号（漫画青筋）：四段弧凸面朝中心。愤怒 / 嘲讽 / 仇恨标记。"""
     grid: Grid = {}
@@ -781,7 +762,6 @@ BUILDERS: list[Callable[[], dict]] = [
     lambda: build_explosion(3),
     build_slash_arc,
     build_heart,
-    build_music_note,
     build_anger_mark,
     build_sleep_z,
 ]
