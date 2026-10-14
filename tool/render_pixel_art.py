@@ -1,3 +1,5 @@
+# 我草真有人来看代码啊
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """从像素画 JSON 读取 RGBA 数据，控制台预览并导出 PNG。
