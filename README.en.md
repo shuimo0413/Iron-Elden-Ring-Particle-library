@@ -3,7 +3,7 @@
 [中文](README.md) | **English**
 
 - Particle library of the Minecraft mod **"Iron's Spells 'n Spellbooks: Elden Ring"**. It stores original pixel-art particle PNGs and can also be used on its own as a general-purpose particle texture pack.
-- Most particles are **32×32**.
+- Most particles are **32×32**; the sigil family `sigil_*` is **64×64** (32×32 cannot fit the three-layer structure of outer ring + tick band + inner ring — glyphs would be squeezed into 4×4 px and stop reading as a magic circle).
 - Repository: https://github.com/shuimo0413/Iron-Elden-Ring-Particle-library
 
 ## Relationship with the main project
@@ -30,6 +30,28 @@ Files are grouped by filename prefix, for example:
 | `nature_*` | Nature / life |
 
 Numbered files such as `*_mote_0/1/2.png` or `*_ripple_0/1/2.png` are animation frames or size variants of the same particle.
+
+## Sigil family (64×64, `sigil_*`)
+
+Six spell-agnostic magic circles meant to be tinted at runtime. Shared composition rules: the outer silhouette must stay a large circle (gaps allowed); asymmetry only comes from tick spacing, spoke length, gap angles and off-center rings; a 2 px transparent margin prevents atlas bleeding.
+
+| File | Structure | Main asymmetry |
+|---|---|---|
+| `sigil_arcane` | Double outer ring + 24 ticks + dashed inner ring + hollow center triangle | Ticks rotated 7°, third diamond glyph shifted 11° |
+| `sigil_frost` | Hexagram (two triangles) + inner hexagon + center snowflake | Six ring gaps offset 13° from the tips, widths 4.5°–9° |
+| `sigil_ember` | Multi-segment broken ring + 13-tooth trapezoid gear + diamond flame core | Six gap widths from 6° to 21°, unequal tooth heights |
+| `sigil_verdant` | Sine-perturbed vine ring + 7 leaf buds + five-petal core | Dual-frequency vine, leaf length 2–4 px randomized |
+| `sigil_void` | Three rings with individual off-centers + 9 unequal spokes | Rings 2 and 3 shifted 1.5 px each, hollow center |
+| `sigil_gold` | 268° main arc + detached arc fragment + golden-angle rays | Rays spaced by 137.508°, randomized length |
+
+Regenerating (pixel data lives in the script, output is deterministic):
+
+```powershell
+cd tool
+python gen_sigil_particles.py
+```
+
+> Particles are billboards (always facing the camera), so they can only serve as *standing* sigils. For a ground-projected magic circle use a quad-based entity renderer (see `TerraMagicaZoneRenderer` in the main project) and let particles handle only the rim accents.
 
 ## tool/ — pixel JSON ↔ PNG / showcase image
 

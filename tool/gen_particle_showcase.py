@@ -66,10 +66,17 @@ def list_particle_pngs() -> list[Path]:
 
 
 def render_tile(particle_path: Path, tile_size: int) -> Image.Image:
-    """单个格子：深色底 + 模糊光晕 + 放大的原贴图。"""
+    """单个格子：深色底 + 模糊光晕 + 放大的原贴图。
+
+    放大倍数按贴图尺寸自适应：库内 32×32 用 SPRITE_SCALE=4（128px），
+    64×64 法阵自动降到 2（128px），保证不同分辨率的粒子在总览里显示尺寸一致、
+    且最近邻放大不糊、不会溢出格子。
+    """
     tile = Image.new("RGBA", (tile_size, tile_size), TILE_COLOR + (255,))
     sprite = Image.open(particle_path).convert("RGBA")
-    sprite_size = sprite.width * SPRITE_SCALE
+    fit_limit = tile_size - 10
+    scale = max(1, min(SPRITE_SCALE, fit_limit // max(sprite.width, 1)))
+    sprite_size = sprite.width * scale
     sprite = sprite.resize((sprite_size, sprite_size), Image.NEAREST)
     offset = ((tile_size - sprite_size) // 2, (tile_size - sprite_size) // 2)
 
