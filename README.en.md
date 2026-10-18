@@ -33,7 +33,9 @@ Numbered files such as `*_mote_0/1/2.png` or `*_ripple_0/1/2.png` are animation 
 
 ## Sigil family (64×64, `sigil_*`)
 
-Six spell-agnostic magic circles meant to be tinted at runtime. Shared composition rules: the outer silhouette must stay a large circle (gaps allowed); asymmetry only comes from tick spacing, spoke length, gap angles and off-center rings; a 2 px transparent margin prevents atlas bleeding.
+Spell-agnostic magic circles meant to be tinted at runtime (15 in two batches). Shared composition rules: the outer silhouette must stay a large circle (gaps allowed); asymmetry only comes from tick spacing, spoke length, gap angles and off-center rings; a 2 px transparent margin prevents atlas bleeding.
+
+Batch 1 (`gen_sigil_particles.py`, geometric / elemental):
 
 | File | Structure | Main asymmetry |
 |---|---|---|
@@ -44,11 +46,26 @@ Six spell-agnostic magic circles meant to be tinted at runtime. Shared compositi
 | `sigil_void` | Three rings with individual off-centers + 9 unequal spokes | Rings 2 and 3 shifted 1.5 px each, hollow center |
 | `sigil_gold` | 268° main arc + detached arc fragment + golden-angle rays | Rays spaced by 137.508°, randomized length |
 
+Batch 2 (`gen_sigil_extra_particles.py`, totems / artifacts):
+
+| File | Structure | Main asymmetry |
+|---|---|---|
+| `sigil_lunar` | Outer ring + 28 ticks + ring of eight moon phases + center crescent holding a star | Full moon drawn one size larger, crescent opens to the upper right |
+| `sigil_clockwork` | Double bezel + 12 hour marks + three meshing gears (large / medium / small) | Each gear off-center, double mark at 12 o'clock |
+| `sigil_runic` | 3×5 rune band between two rings + {7/2} heptagram + large center rune | One rune slot replaced by a diamond, heptagram rotated 5° |
+| `sigil_spiral` | Three logarithmic spiral arms + bright core + scattered stars + broken ring | Arm sweeps of 255° / 300° / 340° |
+| `sigil_eye` | Almond eye from two intersecting circles + slit-pupil iris + lash rays | 7 upper / 4 lower rays of uneven length, three ring gaps |
+| `sigil_compass` | 72-step bezel + eight-point compass rose with lit / shaded halves | Rose rotated −8° (magnetic declination), longer north needle |
+| `sigil_octagram` | Two overlapping squares + inscribed circle + inner square + small center seal | Beads on only 3 of 8 tips, inner square rotated 7° |
+| `sigil_storm` | Shattered outer ring + double inner ring + seven radiating lightning bolts | Random bolt angles / lengths, three bolts fork |
+| `sigil_constellation` | Star-chart dots + two linked constellations + tilted orbit with a planet | Free-form star placement, orbit tilted −28° |
+
 Regenerating (pixel data lives in the script, output is deterministic):
 
 ```powershell
 cd tool
 python gen_sigil_particles.py
+python gen_sigil_extra_particles.py
 ```
 
 > Particles are billboards (always facing the camera), so they can only serve as *standing* sigils. For a ground-projected magic circle use a quad-based entity renderer (see `TerraMagicaZoneRenderer` in the main project) and let particles handle only the rim accents.
