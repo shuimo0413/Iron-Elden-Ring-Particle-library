@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 """粒子库宣传总览图生成器。
 
-读取本库根目录 ``*.png``（排除输出文件自身），按**文件名字符升序**排成一张深色
-背景宣传图，输出 ``粒子库/粒子库预览.png``。不加系列分组——粒子持续扩充时不必改脚本。
+读取 ``images/`` 目录全部 ``*.png``（排除输出文件自身），按**文件名字符升序**
+排成一张深色背景宣传图，输出 ``粒子库/粒子库预览.png``。不加系列分组——粒子
+持续扩充时不必改脚本。
 
 路径注意：``粒子库/`` 在双版本工作区是 junction。必须用 ``Path(__file__).absolute()``
 （不要 ``resolve()``），否则会穿过 junction 指到错误目录。
@@ -59,9 +60,9 @@ def load_font(size: int, bold: bool = False) -> ImageFont.ImageFont:
 
 
 def list_particle_pngs() -> list[Path]:
-    """粒子库根目录下全部贴图，文件名字符升序；排除总览输出图本身。"""
+    """images/ 目录下全部贴图，文件名字符升序；排除总览输出图本身。"""
     return sorted(
-        path for path in PARTICLE_DIR.glob("*.png") if path.name != OUTPUT_PATH.name
+        path for path in (PARTICLE_DIR / "images").glob("*.png") if path.name != OUTPUT_PATH.name
     )
 
 
