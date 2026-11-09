@@ -1,0 +1,20 @@
+:root {
+  --bg0: #f5f5f5;
+  --bg1: #ffffff;
+  --ink: rgba(0, 0, 0, 0.88);
+  --muted: rgba(0, 0, 0, 0.45);
+  --accent: #1677ff;
+  --ok: #52c41a;
+  --warn: #faad14;
+  --danger: #ff4d4f;
+  --line: rgba(0, 0, 0, 0.06);
+  --field-border: #d9d9d9;
+  /* 像素画布的棋盘格底色：表示透明 */
+  --checker-light: #e8e8e8;
+  --checker-dark: #c8c8c8;
+  /* 粒子预览深色底：粒子在游戏里多叠在深色场景上 */
+  --stage-bg: #12142a;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}

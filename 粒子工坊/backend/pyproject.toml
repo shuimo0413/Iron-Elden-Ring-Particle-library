@@ -1,0 +1,118 @@
+[project]
+name = "particle-workshop-backend"
+version = "0.1.0"
+description = "粒子工坊后端：AI 生成像素画 + 图片逐像素取色"
+requires-python = ">=3.11"
+dependencies = [
+    # Web 框架
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "python-multipart>=0.0.9",
+    # 配置与校验
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    # 数据库：SQLite 异步
+    "sqlalchemy[asyncio]>=2.0.36",
+    "aiosqlite>=0.20.0",
+    "greenlet>=3.0.0",
+    # 大模型与工作流
+    "openai>=1.40.0",
+    "langgraph>=0.3.0",
+    "langgraph-checkpoint-sqlite>=2.0.0",
+    # 图片
+    "Pillow>=10.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",
+    "ruff>=0.6.0",
+    "import-linter>=2.0",
+]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "tencent"
+url = "https://mirrors.cloud.tencent.com/pypi/simple/"
+default = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]
+
+[tool.importlinter]
+root_packages = ["common", "pojo", "server"]
+include_external_packages = true
+
+# 三层：server 依赖 pojo / common；pojo 只依赖 common；common 不依赖上层
+[[tool.importlinter.contracts]]
+name = "三层依赖方向 server -> pojo -> common"
+type = "layers"
+layers = ["server", "pojo", "common"]
+
+# server 内部：入口层 -> controller / task -> 装配 -> service -> workflow -> 数据 / 外部 / 计算
+[[tool.importlinter.contracts]]
+name = "server 内部分层"
+type = "layers"
+layers = [
+    "server.main",
+    "server.config.app_config",
+    "server.controller : server.task",
+    "server.config.dependency_config : server.config.workflow_config",
+    "server.service",
+    "server.workflow",
+    "server.mapper | server.client | server.calc",
+]
+
+[[tool.importlinter.contracts]]
+name = "service / workflow 不感知 FastAPI"
+type = "forbidden"
+source_modules = ["server.service", "server.workflow", "server.mapper", "server.client", "server.calc"]
+forbidden_modules = ["fastapi", "starlette"]
+
+[[tool.importlinter.contracts]]
+name = "workflow 不直接访问数据库（落库由 task 经 service 完成）"
+type = "forbidden"
+source_modules = ["server.workflow"]
+forbidden_modules = ["sqlalchemy", "server.mapper"]
+
+[[tool.importlinter.contracts]]
+name = "client 不访问数据库"
+type = "forbidden"
+source_modules = ["server.client"]
+forbidden_modules = ["sqlalchemy", "server.mapper"]
+
+[[tool.importlinter.contracts]]
+name = "calc 为纯函数（不碰库、不调外部、不读配置）"
+type = "forbidden"
+source_modules = ["server.calc"]
+forbidden_modules = [
+    "sqlalchemy",
+    "server.mapper",
+    "server.client",
+    "server.service",
+    "server.workflow",
+    "common.properties",
+    "langgraph",
+    "openai",
+]
+
+[[tool.importlinter.contracts]]
+name = "mapper 互不调用业务层"
+type = "forbidden"
+source_modules = ["server.mapper"]
+forbidden_modules = ["server.service", "server.client", "server.controller", "server.task", "server.workflow"]

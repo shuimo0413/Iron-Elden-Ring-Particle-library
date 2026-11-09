@@ -16,10 +16,18 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import BinaryIO
+
+# Pillow 把 16 位灰度 PNG 读成这些整数模式（取值 0–65535）；直接 convert("RGBA") 会把
+# 大于 255 的值全部截成 255，必须先右移 8 位缩到 0–255。
+SIXTEEN_BIT_GRAY_MODES = frozenset({"I;16", "I;16B", "I;16L", "I;16N", "I"})
 
 
-def load_rgba_grid(image_path: Path) -> tuple[int, int, list[list[tuple[int, int, int, int]]]]:
-    """读取图片并转为 ``height × width`` 的 RGBA 网格（每通道 0–255）。"""
+def load_rgba_grid(image_source: Path | BinaryIO) -> tuple[int, int, list[list[tuple[int, int, int, int]]]]:
+    """读取图片并转为 ``height × width`` 的 RGBA 网格（每通道 0–255）。
+
+    ``image_source`` 可以是文件路径，也可以是已打开的二进制流（Web 上传直接传字节流，不必落临时文件）。
+    """
     try:
         from PIL import Image
     except ImportError as exc:
@@ -27,8 +35,12 @@ def load_rgba_grid(image_path: Path) -> tuple[int, int, list[list[tuple[int, int
             "缺少 Pillow。请先安装：pip install Pillow"
         ) from exc
 
-    with Image.open(image_path) as image:
-        rgba_image = image.convert("RGBA")
+    with Image.open(image_source) as image:
+        if image.mode in SIXTEEN_BIT_GRAY_MODES:
+            gray_8bit = image.convert("I").point(lambda value: value * (1 / 256)).convert("L")
+            rgba_image = gray_8bit.convert("RGBA")
+        else:
+            rgba_image = image.convert("RGBA")
         width, height = rgba_image.size
         # Pillow 14 起 getdata 会删；get_flattened_data 直接给出 (R,G,B,A) 序列。
         if hasattr(rgba_image, "get_flattened_data"):

@@ -1,0 +1,61 @@
+/* 全局基础样式：跨页面复用的原子类；控件优先用 ant-design-vue */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg0);
+}
+
+.shell {
+  width: 100%;
+  padding: 0 24px 48px;
+}
+
+.panel {
+  margin-top: 16px;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 像素图：放大时不糊 */
+.pixelated {
+  image-rendering: pixelated;
+}
+
+.stage {
+  background: var(--stage-bg);
+  border-radius: 6px;
+}
+
+.pre-block {
+  margin: 0;
+  padding: 12px;
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg0);
+  border-radius: 6px;
+}
